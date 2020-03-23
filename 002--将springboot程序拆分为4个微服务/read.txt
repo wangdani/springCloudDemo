@@ -1,0 +1,7 @@
+#此文件夹将
+疫情统计系统（spring boot）eq
+拆分为：
+eq-api-server 这里包括调用api的功能
+eq-city-server 这里包括查找城市列表的功能
+eq-data-server 这里通过疫情json生成数据到数据库中
+eq-web-server 这里显示页面信息
