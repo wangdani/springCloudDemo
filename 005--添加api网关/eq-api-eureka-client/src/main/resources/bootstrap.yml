@@ -1,0 +1,9 @@
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:28761/eq-eureka-server/eureka/
+
+spring:
+  application:
+    #eureka注册名
+    name: eq-api-eureka-client

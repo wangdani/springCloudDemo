@@ -1,0 +1,10 @@
+spring:
+  profiles:
+    active: demo
+
+
+#日志配置
+logging:
+  level:
+    com.wang.cloud.situation.es.mapper: DEBUG
+

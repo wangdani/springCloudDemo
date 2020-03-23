@@ -1,0 +1,13 @@
+server:
+  port: 28761
+  servlet:
+    context-path: /eq-eureka-server
+
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+  server:
+    waitTimeInMsWhenSyncEmpty: 0

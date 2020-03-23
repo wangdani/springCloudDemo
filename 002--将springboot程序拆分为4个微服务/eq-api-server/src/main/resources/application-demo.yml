@@ -1,0 +1,19 @@
+server:
+  servlet:
+    context-path: /eq-api-server
+  port: 28011
+
+
+spring:
+  #数据库配置
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    username: root
+    password: root
+    url: jdbc:mysql://localhost:3306/es?characterEncoding=utf-8&serverTimezone=GMT%2b8&useSSL=false
+  jpa:
+    show-sql: true
+  jackson:
+    default-property-inclusion: non_null
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
