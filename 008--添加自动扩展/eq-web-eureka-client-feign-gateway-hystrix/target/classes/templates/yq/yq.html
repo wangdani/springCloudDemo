@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>疫情数据可视化</title>
+    <link rel="stylesheet" th:href="@{/css/index.css}">
+    <link rel="stylesheet" th:href="@{/fonts/icomoon.css}">
+    <link rel="stylesheet" th:href="@{/css/dateTime.css}">
+    <link rel="stylesheet" th:href="@{/css/xtiper.css}">
+    <link rel="stylesheet" th:href="@{/css/buttons.css}">
+
+    <style>
+        .myBtn button{
+            width: 150px;
+        }
+        #bigChartDiv{
+            position: fixed;
+            top: 0px;
+            right:0px;
+            width: 100%;
+            height: 100%;
+            z-index: 300;
+            background-color: #333333;
+        }
+        #bigChart{
+            position: absolute;
+            top: 5%;
+            right:5%;
+            width: 90%;
+            height: 90%;
+        }
+        #closeDiv{
+            position: fixed;
+            top: 1%;
+            right:1%;
+            width: 3%;
+            z-index: 350;
+            cursor: pointer;
+        }
+
+
+    </style>
+</head>
+<body>
+    <div id="bigChartDiv">
+        <div id="bigChart"></div>
+        <div id="closeDiv" onclick="closeBig()">
+            <!--<img src="../images/close.png" title="关闭全屏" width="100%" height="100%">-->
+            <span title="关闭全屏" ><b><i><font size="3" color="white">EXIT</font></i></b></span>
+        </div>
+            <input type="hidden" id="nowChartIs" value="myChart1">
+
+        <script>
+            function closeBig(){
+                clearChartFunc();
+                $("#nowChartIs").val("myChart1");
+                hideDiv("#bigChartDiv");
+
+            }
+            function startBig(){
+                //clearChartFunc();
+                $("#nowChartIs").val("bigChart");
+                showDiv("#bigChartDiv");
+                clickChartIs();
+            }
+
+
+        </script>
+
+    </div>
+
+
+
+    <div class="viewport">
+        <div class="column">
+            <!--概览-->
+            <div class="overview panel">
+                <div class="inner">
+                    <div class="item">
+                        <span>
+                            数据来源：<br>
+                            国家卫健委和各省卫健委通报
+                            <br>
+                            截至<font id="jzFont" >0</font> 24时
+                        </span>
+                    </div>
+                    <div class="item">
+                        <h4 th:text="${reportModel.allLjqz}" >0</h4>
+                        <span>
+                            <i class="icon-dot" style="color: #006cff"></i>
+                            确诊
+                        </span>
+                    </div>
+                    <div class="item">
+                        <h4 th:text="${reportModel.allLjys}"  >0</h4>
+                        <span>
+                            <i class="icon-dot" style="color: #6acca3"></i>
+                            疑似
+                        </span>
+                    </div>
+                    <div class="item">
+                        <h4 th:text="${reportModel.allLjsw}"  >0</h4>
+                        <span>
+                            <i class="icon-dot" style="color: #6acca3"></i>
+                            死亡
+                        </span>
+                    </div>
+
+                </div>
+            </div>
+
+            <!--点位-->
+            <div class="point panel">
+                <div class="inner">
+                    <input type="hidden" id="lastDay" th:value="${reportModel.lastUpDay}" >
+                    <h3>统计条件(可查范围: <font id="lastDayFont"></font>)</h3>
+                    <div class="item">
+                        <span>开始日期：</span><input id="startDate"  type="text" value="" readonly>
+                        <br>
+                        <span>结束日期： </span><input id="endDate"  type="text" value="" readonly>
+                        <br>
+                        <div class="myBtn">
+                            <button onclick="byEveryDay()"
+                                    class="button button--ujarak button--border-thin button--text-thick" data-text="每日增长比较"><span>每日增长比较</span></button>
+                            <button onclick="byEveryProvince()"
+                                    class="button button--ujarak button--border-thin button--text-thick" data-text="各省走势图"><span>各省走势图</span></button>
+                            <button onclick="firstClickByAllProvince()"
+                                    class="button button--ujarak button--border-thin button--text-thick" data-text="各省走势图"><span>省份排序查询</span></button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!--监控-->
+            <div class="monitor panel">
+                <div class="inner">
+                    <div class="tabs">
+                        <a href="javascript:;" data-index="0" class="active">
+                            需要查询的省份
+                        </a>
+                        <font color="white" >&nbsp;&nbsp;登录地:&nbsp;<font id="nowIP"></font></font>
+                    </div>
+
+                    <div class="content" style="display: block;">
+                        <div class="head">
+                            <span class="col">
+                                <input type="checkbox" id="checkAll">
+                                全选
+                            </span>
+                            <span class="col">省份编码</span>
+                            <span class="col">省份名称</span>
+                        </div>
+
+                        <div class="marquee-view">
+                            <div style="overflow: scroll;height:100%;width: 100%;" >
+                                <div class="row"  th:each="lists : ${reportModel.cityList}" >
+                                    <span class="col" >
+                                        <input name="checkProv" type="checkbox" th:value="${lists.cityName}" />
+                                    </span>
+                                    <span class="col"  th:text="${lists.cityCode}"></span>
+                                    <span class="col"  th:text="${lists.cityName}" ></span>
+                                    <span class="icon-dot"></span>
+                                </div>
+                            </div>
+                        </div>
+-->
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+        <div class="column">
+            <!-- 地图 -->
+            <div class="map">
+                <h3>
+                    <span class="icon-cube"></span>
+                    <span id="echartsName">疫情数据统计</span>
+                    &nbsp;&nbsp;<a href="javacript:void(0);" onclick="startBig()">全屏</a>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    速度：&nbsp;&nbsp;
+                    <select id="readSpeech">
+                                <option selected>1</option>
+                                <option>2</option>
+                                <option>3</option>
+                                <option>5</option>
+                                <option>10</option>
+                    </select>&nbsp;&nbsp;秒
+                    <div style="display: none">
+                        &nbsp;&nbsp;&nbsp;&nbsp;主题：<input type="radio" value="dark" name="nowChartTheme" checked>暗色&nbsp;&nbsp;&nbsp;<input type="radio" value="light" name="nowChartTheme">亮色
+                    </div>
+
+                    <br><br>
+                    <div id="hide1">
+                        <input id="showLJPie" type="checkbox" onclick="byEveryDay()" />显示累计饼图
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        <input id="showTSWZ" type="checkbox" onclick="byEveryDay()" />提示文字
+                        <br>
+                    </div>
+                    <div id="hide2">
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        <br>
+                    </div>
+                    <div id="hide3">
+                        <div style="display: none">
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                            <input id="showLJPie3" type="checkbox" onclick="byAllProvince()"/>显示累计饼图
+                        </div>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        <input id="showTSWZ3" type="checkbox"  onclick="byAllProvince()"/>提示文字
+                        &nbsp;&nbsp;已选择<font color="red" id="pLength">0</font>个省份，
+                            统计第
+                            <input size="2" type="text" value="1" id="aX">&nbsp;至&nbsp;第
+                            <input size="2" type="text" value="10" id="bX">个省份;
+                        <br><br>
+                        <div>
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                            排序：
+                            &nbsp;&nbsp;<input type="radio" value="累计疑似" name="nowSort" checked onclick="byAllProvince()">累计疑似
+                            &nbsp;&nbsp;<input type="radio" value="累计确诊" name="nowSort" onclick="byAllProvince()">累计确诊
+                            &nbsp;&nbsp;<input type="radio" value="累计死亡" name="nowSort" onclick="byAllProvince()">累计死亡
+                            &nbsp;&nbsp;<input type="radio" value="新增疑似" name="nowSort" onclick="byAllProvince()">新增疑似
+                            &nbsp;&nbsp;<input type="radio" value="新增确诊" name="nowSort" onclick="byAllProvince()">新增确诊
+                            &nbsp;&nbsp;<input type="radio" value="新增死亡" name="nowSort" onclick="byAllProvince()">新增死亡
+                        </div>
+                        <br>
+                    </div>
+
+                </h3>
+                <div class="chart">
+                    <div class="geo" id="myChart1"></div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</body>
+
+<script src="https://www.jq22.com/jquery/jquery-1.10.2.js"></script>
+<script src="https://www.jq22.com/jquery/echarts-4.2.1.min.js"></script>
+<script type="text/javascript" th:src="@{/js/xtiper.min.js}"></script>
+
+<script type="text/javascript" th:src="@{/js/my.js?v=ver(ver=${reportModel.lastUpDay})}"></script>
+<script type="text/javascript" th:src="@{/js/echarts/e1.js?v=ver(ver=${reportModel.lastUpDay})}"></script>
+<script type="text/javascript" th:src="@{/js/echarts/e2.js?v=ver(ver=${reportModel.lastUpDay})}"></script>
+<script type="text/javascript" th:src="@{/js/echarts/e3.js?v=ver(ver=${reportModel.lastUpDay})}"></script>
+
+
+<script type="text/javascript" th:src="@{/js/dateTime.js}"></script>
+<script>
+    $("#startDate").datetime({
+        type:"date",
+        value:[2020,1,13],
+        success:function(res){
+            console.log(res)
+        }
+    })
+    $("#endDate").datetime({
+        type:"date",
+        value:[2020,1,13],
+        success:function(res){
+            console.log(res)
+        }
+    })
+    $(function() {
+        loadDate(); //初始化时间
+        checkAll();//全选设置
+        //chartFunc(option);
+
+        getNowIp();
+    })
+
+    function selectByObject(arg){
+        var url = getPath()+"/epidemic/selectByObject";
+        arg.note = returnCitySN["cip"]+" "+lo+" "+lc ; //returnCitySN["cname"];
+        var list;
+        $.ajax({
+            url:url,
+            data:arg,
+            type:"POST",
+            async: false,
+            dataType:"json",
+            success:function(data){
+                if(data==null){
+                    var msg = "数据API接口暂时无法访问！";
+                    xtip.msg(msg,{icon:'e',times:3,type:'w'});
+                    throw msg;
+                }
+                list = data;
+            },
+            error:function(request){
+                alert("产生错误！！！请重试！！！");
+            }
+        });
+        return list;
+    }
+
+</script>
+
+<script src="http://ip.ws.126.net/ipquery"></script>
+<script type="text/javascript">
+    function getNowIp(){
+        $("#nowIP").text(lo+" "+lc) ;
+        var pro = lo.substring(0,2);
+        var proAttr = $("[name='checkProv']");
+        for(var i=0;i<proAttr.length;i++){
+            if(proAttr.eq(i).val().indexOf(pro) != -1){
+                proAttr.eq(i).prop("checked", true);
+                break;
+            }
+        }
+        byEveryProvince();
+    }
+</script>
+<script src="http://pv.sohu.com/cityjson?ie=utf-8"></script>
+
+
+
+
+
+</html>

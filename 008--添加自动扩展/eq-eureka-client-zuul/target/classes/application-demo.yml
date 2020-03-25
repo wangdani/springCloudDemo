@@ -1,0 +1,4 @@
+server:
+  port: 28721
+  servlet:
+    context-path: /eq-eureka-client-zuul
