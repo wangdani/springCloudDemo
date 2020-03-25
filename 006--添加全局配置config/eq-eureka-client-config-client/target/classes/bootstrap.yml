@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: eq-eureka-config-client
+  cloud:
+    config:
+      profile: dev
+      uri: http://localhost:28051/
+
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:28761/eq-eureka-server/eureka/
+
+
+
