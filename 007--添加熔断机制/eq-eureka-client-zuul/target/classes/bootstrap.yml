@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: eq-eureka-client-zuul
+
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:28761/eq-eureka-server/eureka/
+
+zuul:
+  routes:
+    city:
+      path: /city/**
+      serviceId: eq-city-eureka-client
+    data:
+      path: /data/**
+      serviceId: eq-data-eureka-client
+    api:
+      path: /api/**
+      serviceId: eq-api-eureka-client

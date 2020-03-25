@@ -1,0 +1,19 @@
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:28761/eq-eureka-server/eureka/
+
+spring:
+  application:
+    #eureka注册名
+    name: eq-web-eureka-client-feign-gateway-hystrix
+
+feign:
+  client:
+    config:
+      feignName:
+        connectTimeout: 5000
+        readTimeout: 5000
+  #允许在feign客户端中使用断路器（hystrix）
+  hystrix:
+    enabled: true
